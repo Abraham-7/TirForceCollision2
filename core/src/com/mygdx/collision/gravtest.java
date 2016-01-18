@@ -164,41 +164,7 @@ public class gravtest implements Screen, InputProcessor {
         player.createFixture(fdef);
         player.setGravityScale(1);
     }
-    /* private void createTubeBot() {
-         BotTube = new Texture("bottomtube.png");
-         sprite = new Sprite(BotTube);
-         bdef = new BodyDef();
-         PolygonShape shape = new PolygonShape();
 
-         bdef.position.set(450, 450);
-         bdef.type = BodyDef.BodyType.StaticBody;
-         player = world.createBody(bdef);
-
-         shape.setAsBox(BotTube.getWidth(), BotTube.getHeight() / 2);
-         fdef = new FixtureDef();
-         fdef.shape = shape;
-         player.setSleepingAllowed(false);
-         player.createFixture(fdef);
-         player.setGravityScale(0);
-     }*/
-   /* private void createTubeTop() {
-        TopTube = new Texture("toptube.png");
-        sprite = new Sprite(TopTube);
-
-        bdef = new BodyDef();
-        PolygonShape shape = new PolygonShape();
-
-        bdef.position.set(450, 0);
-        bdef.type = BodyDef.BodyType.StaticBody;
-        player = world.createBody(bdef);
-
-        shape.setAsBox(TopTube.getWidth(), TopTube.getHeight() / 2);
-        fdef = new FixtureDef();
-        fdef.shape = shape;
-        player.setSleepingAllowed(false);
-        player.createFixture(fdef);
-        player.setGravityScale(0);
-    }*/
     private void createFloor() { // creating a floor so megaman will not pass through the ground
         bdef = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -293,6 +259,8 @@ public class gravtest implements Screen, InputProcessor {
      */
     @Override
     public void show() {
+        create();
+
         Gdx.input.setInputProcessor(this);
     }
 

@@ -8,23 +8,47 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
 
 public class Tubecollision extends Game {
+	World world;
+	Body player;
+	BodyDef bdef;
+	FixtureDef fdef;
+	//Texture txTtube,txBtube;
+	//Sprite[] spBird = new Sprite[4];
+	//Sprite sprTtube,sprBtube;
+	//Array<Sprite> arsprTtube,arsprBtube;
+	//long movetime,movetime2;
+	//int nspawnTime;
+	//float fTtubey;
+	TextureAtlas taBird;
+	Box2DDebugRenderer b2dr;
+	//OrthographicCamera camera;
+	float elapsedTime;
+	Animation aPlayer;
+	//SpriteBatch batch;
+	Body floor;
 	TextureAtlas taMegaman;
 	Sprite[] spMegaman;
 	int j, nSpeed = 0;
 	com.badlogic.gdx.audio.Music Music;
 	com.badlogic.gdx.audio.Sound Sound;
 	gravtest Gravtest;
-	Texture txTtube, txBtube;
+	Texture txTtube, txBtube,img;
 	SpriteBatch batch;
 	Sprite sprTtube, sprBtube;
 	OrthographicCamera camera;
@@ -34,11 +58,13 @@ public class Tubecollision extends Game {
 	float fTtubey;
 
 
+
 	@Override
 	public void create() {
 		//j = 0;
 
 		//nSpeed = 0;
+		img= new  Texture ("Bird.png");
 		txTtube = new Texture(Gdx.files.internal("toptube.png"));
 		txBtube = new Texture(Gdx.files.internal("bottomtube.png"));
 		nspawnTime = 100;
@@ -90,6 +116,7 @@ public class Tubecollision extends Game {
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+
 		for (Sprite sprTtube : arsprTtube) {
 			batch.draw(sprTtube, sprTtube.getX(), sprTtube.getY());
 		}

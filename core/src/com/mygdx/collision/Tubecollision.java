@@ -3,6 +3,8 @@ package com.mygdx.collision;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,35 +15,33 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
 
-public class Tubecollision extends Game {
+public class Tubecollision extends Game implements Screen, InputProcessor {
 	World world;
 	Body player;
 	BodyDef bdef;
 	FixtureDef fdef;
-	//Texture txTtube,txBtube;
-	//Sprite[] spBird = new Sprite[4];
-	//Sprite sprTtube,sprBtube;
-	//Array<Sprite> arsprTtube,arsprBtube;
-	//long movetime,movetime2;
-	//int nspawnTime;
-	//float fTtubey;
 	TextureAtlas taBird;
 	Box2DDebugRenderer b2dr;
-	//OrthographicCamera camera;
 	float elapsedTime;
 	Animation aPlayer;
-	//SpriteBatch batch;
 	Body floor;
+	Sprite[] spBird = new Sprite[4];
 	TextureAtlas taMegaman;
 	Sprite[] spMegaman;
 	int j, nSpeed = 0;
@@ -61,10 +61,8 @@ public class Tubecollision extends Game {
 
 	@Override
 	public void create() {
-		//j = 0;
 
-		//nSpeed = 0;
-		img= new  Texture ("Bird.png");
+
 		txTtube = new Texture(Gdx.files.internal("toptube.png"));
 		txBtube = new Texture(Gdx.files.internal("bottomtube.png"));
 		nspawnTime = 100;
@@ -83,11 +81,90 @@ public class Tubecollision extends Game {
 		Music.setLooping(true); // loops the mp3 file
 		Music.play();
 		Music.setVolume(1.0f); //controls how loud the music is
-		setScreen(new gravtest(this));
+		//setScreen(new gravtest(this));
 		spawnTtube();
 		spawnBtube();
-	}
+		Sound = Gdx.audio.newSound(Gdx.files.internal("Hitmarker.mp3")); // adding the audio sound
+		b2dr = new Box2DDebugRenderer();
+		batch = new SpriteBatch();
 
+		taBird = new TextureAtlas(Gdx.files.internal("Bird.txt")); // adding in the megaman.pack file
+
+		for (int i = 0; i < 4; i++) {
+			spBird[i] = new Sprite(taBird.findRegion("frame_" + i));
+		}
+		world = new World(new Vector2(0, -150f), true); // making a new wold for gravity, and setting the velocity of the gravity
+		world.setContactListener(new ContactListener() {
+			@Override
+			public void beginContact(Contact contact) {
+
+			}
+
+			@Override
+			public void endContact(Contact contact) {
+
+			}
+
+			@Override
+			public void preSolve(Contact contact, Manifold oldManifold) {
+
+			}
+
+			@Override
+			public void postSolve(Contact contact, ContactImpulse impulse) {
+
+			}
+		});
+		createPlayer();
+		createFloor();
+		createRoof();
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+		aPlayer = new Animation(1 / 8f, spBird);
+	}
+	private void createRoof(){
+		bdef = new BodyDef();
+		PolygonShape shape = new PolygonShape();
+
+		bdef.position.set(0, 480);
+		bdef.type = BodyDef.BodyType.StaticBody;
+		floor = world.createBody(bdef);
+
+		shape.setAsBox(Gdx.graphics.getWidth(), 1);
+		fdef = new FixtureDef();
+		fdef.shape = shape;
+		floor.setSleepingAllowed(false);
+		floor.createFixture(fdef);
+		floor.setGravityScale(0);
+	} private void createPlayer() {
+		bdef = new BodyDef();
+		PolygonShape shape = new PolygonShape();
+
+		bdef.position.set(0, 90);
+		bdef.type = BodyDef.BodyType.DynamicBody;
+		player = world.createBody(bdef);
+
+		shape.setAsBox(spBird[0].getWidth(), spBird[0].getHeight() / 2);
+		fdef = new FixtureDef();
+		fdef.shape = shape;
+		player.setSleepingAllowed(false);
+		player.createFixture(fdef);
+		player.setGravityScale(1);
+	}
+	private void createFloor() { // creating a floor so megaman will not pass through the ground
+		bdef = new BodyDef();
+		PolygonShape shape = new PolygonShape();
+		bdef.position.set(0, 3);
+		bdef.type = BodyDef.BodyType.StaticBody;
+		floor = world.createBody(bdef);
+		shape.setAsBox(Gdx.graphics.getWidth(), 1);
+		fdef = new FixtureDef();
+		fdef.shape = shape;
+		floor.setSleepingAllowed(false);
+		floor.createFixture(fdef);
+		floor.setGravityScale(0);
+	}
 	private void spawnTtube() {
 		Sprite sprTtube = new Sprite(txTtube);
 		sprTtube.setX(750);
@@ -95,27 +172,28 @@ public class Tubecollision extends Game {
 		arsprTtube.add(sprTtube);
 		fTtubey = sprTtube.getY() - 150;
 		movetime = TimeUtils.nanoTime();
-
 	}
-
 	private void spawnBtube() {
 		Sprite sprBtube = new Sprite(txBtube);
 		sprBtube.setX(750);
 		sprBtube.setY(fTtubey - 300);
 		arsprBtube.add(sprBtube);
 		movetime2 = TimeUtils.nanoTime();
-
 	}
-
-
 	@Override
 	public void render() {
-		super.render();
+		elapsedTime += Gdx.graphics.getDeltaTime();
 		Gdx.gl.glClearColor(1, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		world.step(1 / 60f, 6, 2);
+		b2dr.render(world, camera.combined);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
+		batch.draw(aPlayer.getKeyFrame(elapsedTime, true), player.getPosition().x, player.getPosition().y - spBird[0].getHeight() / 2);
+		if(Gdx.input.justTouched()){
+			Sound.play();
+		}
 
 		for (Sprite sprTtube : arsprTtube) {
 			batch.draw(sprTtube, sprTtube.getX(), sprTtube.getY());
@@ -137,6 +215,57 @@ public class Tubecollision extends Game {
 			Sprite sprBtube = iters.next();
 			sprBtube.setX(sprBtube.getX() - (200) * Gdx.graphics.getDeltaTime());
 		}
+	}
+	@Override
+	public boolean keyDown(int keycode) {
+		return false;
+	}
+
+
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		player.applyForceToCenter(0, 2000000, true);
+		return true;
+
+	}
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
+	}
+	@Override
+	public void show() {
+
+	}
+
+	@Override
+	public void render(float delta) {
+
+	}
+
+	@Override
+	public void hide() {
+
 	}
 }
 //assistance from Don's code and teaching me how to do sprite arrays

@@ -42,15 +42,12 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 	Animation aPlayer;
 	Body floor;
 	Sprite[] spBird = new Sprite[4];
-	TextureAtlas taMegaman;
-	Sprite[] spMegaman;
-	int j, nSpeed = 0;
 	com.badlogic.gdx.audio.Music Music;
 	com.badlogic.gdx.audio.Sound Sound;
 	gravtest Gravtest;
-	Texture txTtube, txBtube,img;
+	Texture txTtube, txBtube,txBird;
 	SpriteBatch batch;
-	Sprite sprTtube, sprBtube;
+	Sprite sprTtube, sprBtube,sprBird;
 	OrthographicCamera camera;
 	Array<Sprite> arsprTtube, arsprBtube;
 	long movetime, movetime2;
@@ -65,10 +62,11 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 
 		txTtube = new Texture(Gdx.files.internal("toptube.png"));
 		txBtube = new Texture(Gdx.files.internal("bottomtube.png"));
+		txBird= new Texture(Gdx.files.internal("Bird.png"));
 		nspawnTime = 100;
 		sprTtube = new Sprite(txTtube);
 		sprBtube = new Sprite(txBtube);
-		//Creating sprite and camera
+		sprBird = new Sprite(txBird);
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
 		batch = new SpriteBatch();
@@ -88,10 +86,12 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 		b2dr = new Box2DDebugRenderer();
 		batch = new SpriteBatch();
 
-		taBird = new TextureAtlas(Gdx.files.internal("Bird.txt")); // adding in the megaman.pack file
-
+		taBird = new TextureAtlas(Gdx.files.internal("Bird.txt")); // adding in the Bird.pack file
+		//Sprite spBird= new Sprite("Bird.txt");
 		for (int i = 0; i < 4; i++) {
 			spBird[i] = new Sprite(taBird.findRegion("frame_" + i));
+			//Sprite spBird= new Sprite("Bird.txt");
+			Sprite sprBird = new Sprite(txBird);
 		}
 		world = new World(new Vector2(0, -150f), true); // making a new wold for gravity, and setting the velocity of the gravity
 		world.setContactListener(new ContactListener() {
@@ -118,6 +118,7 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 		createPlayer();
 		createFloor();
 		createRoof();
+		//Collision();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -180,6 +181,12 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 		arsprBtube.add(sprBtube);
 		movetime2 = TimeUtils.nanoTime();
 	}
+	//private void Collision() {
+	//	if(spBird.getBoundingRectangle().overlaps(sprBTube.getBoundingRectangle())) {
+
+	//	}
+	//}
+
 	@Override
 	public void render() {
 		elapsedTime += Gdx.graphics.getDeltaTime();
@@ -193,6 +200,9 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 		batch.draw(aPlayer.getKeyFrame(elapsedTime, true), player.getPosition().x, player.getPosition().y - spBird[0].getHeight() / 2);
 		if(Gdx.input.justTouched()){
 			Sound.play();
+		}
+		if (sprBird.getBoundingRectangle().overlaps(sprBtube.getBoundingRectangle())) {
+		System.out.println("Hello");
 		}
 
 		for (Sprite sprTtube : arsprTtube) {

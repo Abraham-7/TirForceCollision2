@@ -53,13 +53,8 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 	long movetime, movetime2;
 	int nspawnTime;
 	float fTtubey;
-
-
-
 	@Override
 	public void create() {
-
-
 		txTtube = new Texture(Gdx.files.internal("toptube.png"));
 		txBtube = new Texture(Gdx.files.internal("bottomtube.png"));
 		txBird= new Texture(Gdx.files.internal("Bird.png"));
@@ -72,20 +67,16 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 		batch = new SpriteBatch();
 		arsprTtube = new Array<Sprite>();
 		arsprBtube = new Array<Sprite>();
-
-
 		Music = Gdx.audio.newMusic(Gdx.files.internal("ElginMusic.mp3")); // not the greatest naming
 		Sound = Gdx.audio.newSound(Gdx.files.internal("Hitmarker.mp3"));
 		Music.setLooping(true); // loops the mp3 file
 		Music.play();
 		Music.setVolume(1.0f); //controls how loud the music is
-		//setScreen(new gravtest(this));
 		spawnTtube();
 		spawnBtube();
 		Sound = Gdx.audio.newSound(Gdx.files.internal("Hitmarker.mp3")); // adding the audio sound
 		b2dr = new Box2DDebugRenderer();
 		batch = new SpriteBatch();
-
 		taBird = new TextureAtlas(Gdx.files.internal("Bird.txt")); // adding in the Bird.pack file
 		//Sprite spBird= new Sprite("Bird.txt");
 		for (int i = 0; i < 4; i++) {
@@ -97,22 +88,15 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 		world.setContactListener(new ContactListener() {
 			@Override
 			public void beginContact(Contact contact) {
-
 			}
-
 			@Override
 			public void endContact(Contact contact) {
-
 			}
-
 			@Override
 			public void preSolve(Contact contact, Manifold oldManifold) {
-
 			}
-
 			@Override
 			public void postSolve(Contact contact, ContactImpulse impulse) {
-
 			}
 		});
 		createPlayer();
@@ -121,17 +105,14 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 		//Collision();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
 		aPlayer = new Animation(1 / 8f, spBird);
 	}
 	private void createRoof(){
 		bdef = new BodyDef();
 		PolygonShape shape = new PolygonShape();
-
 		bdef.position.set(0, 480);
 		bdef.type = BodyDef.BodyType.StaticBody;
 		floor = world.createBody(bdef);
-
 		shape.setAsBox(Gdx.graphics.getWidth(), 1);
 		fdef = new FixtureDef();
 		fdef.shape = shape;
@@ -141,11 +122,9 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 	} private void createPlayer() {
 		bdef = new BodyDef();
 		PolygonShape shape = new PolygonShape();
-
 		bdef.position.set(0, 90);
 		bdef.type = BodyDef.BodyType.DynamicBody;
 		player = world.createBody(bdef);
-
 		shape.setAsBox(spBird[0].getWidth(), spBird[0].getHeight() / 2);
 		fdef = new FixtureDef();
 		fdef.shape = shape;
@@ -183,10 +162,8 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 	}
 	//private void Collision() {
 	//	if(spBird.getBoundingRectangle().overlaps(sprBTube.getBoundingRectangle())) {
-
 	//	}
 	//}
-
 	@Override
 	public void render() {
 		elapsedTime += Gdx.graphics.getDeltaTime();
@@ -204,7 +181,6 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 		if (sprBird.getBoundingRectangle().overlaps(sprBtube.getBoundingRectangle())) {
 		System.out.println("Hello");
 		}
-
 		for (Sprite sprTtube : arsprTtube) {
 			batch.draw(sprTtube, sprTtube.getX(), sprTtube.getY());
 		}
@@ -217,14 +193,15 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 		while (iter.hasNext()) {
 			Sprite sprTtube = iter.next();
 			sprTtube.setX(sprTtube.getX() - (200) * Gdx.graphics.getDeltaTime());
-
 		}
 		if (TimeUtils.nanoTime() - movetime2 > 100000000 * nspawnTime) spawnBtube();
 		Iterator<Sprite> iters = arsprBtube.iterator();
 		while (iters.hasNext()) {
 			Sprite sprBtube = iters.next();
 			sprBtube.setX(sprBtube.getX() - (200) * Gdx.graphics.getDeltaTime());
-		}
+		}if (sprBird.getBoundingRectangle().overlaps(sprBtube.getBoundingRectangle()))
+			System.out.println("Hello");
+
 	}
 	@Override
 	public boolean keyDown(int keycode) {

@@ -44,7 +44,7 @@ public class Tubecollision extends Game implements Screen, InputProcessor {
 	Sprite[] spBird = new Sprite[4];
 	com.badlogic.gdx.audio.Music Music;
 	com.badlogic.gdx.audio.Sound Sound;
-	gravtest Gravtest;
+//	gravtest Gravtest;
 	Texture txTtube, txBtube,txBird;
 	SpriteBatch batch;
 	Sprite sprTtube, sprBtube,sprBird;
